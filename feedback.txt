@@ -1,0 +1,11 @@
+ES6 is still nto implemente, try to figure out where are you stuck  - done
+code commenting for class
+Add a global method for logs and use it rather than in console logs
+constant file is there but it is not used in products controller
+const is declared but never used
+code is not consistent for asyc await & promises
+common code for validation (Can it be done in middle ware than in each route ? )
+common error handler is not good. There are other better approaches
+respose handler(data :{} success : ) and req handler (validation in middle ware )
+Internationalization logic is pending
+make database querying things outside of the controllers 
