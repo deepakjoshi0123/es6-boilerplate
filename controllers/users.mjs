@@ -4,42 +4,12 @@ import bcrypt from 'bcryptjs'
 import logger from '../logger.mjs'
 import myconst from '../constant/constant.mjs'
 import dotenv from 'dotenv'
-
+import { search, response } from '../util/utilFunctions.mjs'
 dotenv.config();
 
-//sends user profile after matching the email 
-
-// function response(data) {
-//     res.json(
-//         {
-//             "success": false,
-//             "message": data.message,
-//             "error_code": data.code,
-//             "data": data.content
-//         }
-//     )
-// }
-
+//sends user profile after matching the email
 
 class userController {
-
-    // time complexity  = > size of object 
-    static search(lang, qry) {
-        {
-            for (let key in myconst) {
-                if (key === lang) {
-                    for (let key2 in myconst[key]) {
-                        if (qry === key2)
-                            return myconst[key][qry];
-                    }
-                };
-            }
-            // default language is english if that language is not avialable 
-            return myconst.english.emailNotfound;
-        }
-
-    }
-
     static login = async (req, res, next) => {
         const mymsg = (myconst);
         const email = req.body.email;
@@ -49,12 +19,9 @@ class userController {
         logger.info('entry to login function ')
         try {
             const user1 = await user.findOne({ where: { email: email } });
-
             if (!user1) {
 
-                //console.log(JSON.stringify(mymsg.language.emailNotfound))
-                const error = new Error(this.search(language, 'emailNotfound'));
-                //  logger.error('User with this email not found');
+                const error = new Error(search(language, 'emailNotfound'));
                 error.statusCode = 401;
                 throw error;
             }
@@ -73,6 +40,9 @@ class userController {
                 process.env.TOKEN_KEY,
                 { expiresIn: '5h' } // .env not working for this 
             );
+            const resData = { token: token, userId: user1.id }
+            response(true, search(language, 'loggedInSucc'), 200, resData, res)
+
             res.status(200).json({ token: token, userId: user1.id });
             logger.info('token and id send as response');
         }
@@ -80,7 +50,6 @@ class userController {
             showLog(error);
             next(error);
         }
-
     };
 
     static getProfile = async (req, res, next) => {
