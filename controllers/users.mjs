@@ -1,4 +1,3 @@
-//import { validationResult } from 'express-validator'
 import user from '../model/user.mjs'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
@@ -21,72 +20,41 @@ dotenv.config();
 //     )
 // }
 
+
 class userController {
-    static getProfile = async (req, res, next) => {
-        const email = req.body.email;
-        try {
-            const user1 = await user.findOne({ where: { email: email } })
-            if (user1) {
-                // Response(userData);
-                res.json({ user: userProfile });
+
+    // time complexity  = > size of object 
+    static search(lang, qry) {
+        {
+            for (let key in myconst) {
+                if (key === lang) {
+                    for (let key2 in myconst[key]) {
+                        if (qry === key2)
+                            return myconst[key][qry];
+                    }
+                };
             }
+            // default language is english if that language is not avialable 
+            return myconst.english.emailNotfound;
         }
-        catch (err) {
-            showLog(err)
-        }
+
     }
-    // handles signup when users creates new profile  
-    static signup = async (req, res, next) => {
 
-
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            logger.error(myconst.error);
-            const error = new Error(myconst.error);
-            error.statusCode = 422;
-            error.data = errors.array();
-            throw error;
-        }
-
-        try {
-            const email = req.body.email;
-            const password = req.body.password;
-            const country = req.body.country;
-            const fullName = req.body.fullName;
-            const hassedPw = await bcrypt.hash(password, 12);
-            logger.info('going to insert user in the database');
-            const user1 = await user.create({
-                email: email,
-                password: hassedPw,
-                country: country,
-                fullName: fullName
-            })
-            if (user1) {
-                logger.info('user inserted successfully')
-                res.json({ message: "user added successfully" })
-            }
-        }
-        catch (error) {
-            if (!error.statusCode) {
-                error.statusCode = 422;
-            }
-            next(error);
-        }
-    }
-    //handles login and creates token for upcoming user 
     static login = async (req, res, next) => {
-
+        const mymsg = (myconst);
         const email = req.body.email;
         const password = req.body.password;
-        let loadedUser;
+        const language = req.query.lang;
+
         logger.info('entry to login function ')
         try {
             const user1 = await user.findOne({ where: { email: email } });
 
             if (!user1) {
-                const error = new Error('A user with this email not found');
-                logger.error('User with this email not found');
+
+                //console.log(JSON.stringify(mymsg.language.emailNotfound))
+                const error = new Error(this.search(language, 'emailNotfound'));
+                //  logger.error('User with this email not found');
                 error.statusCode = 401;
                 throw error;
             }
@@ -114,5 +82,62 @@ class userController {
         }
 
     };
+
+    static getProfile = async (req, res, next) => {
+        const email = req.body.email;
+        try {
+            const user1 = await user.findOne({ where: { email: email } })
+            if (user1) {
+                // Response(userData);
+                res.json({ user: userProfile });
+            }
+        }
+        catch (err) {
+            showLog(err)
+        }
+    }
+    // handles signup when users creates new profile  
+    static signup = async (req, res, next) => {
+
+
+        // const errors = validationResult(req);
+
+        // if (!errors.isEmpty()) {
+        //     logger.error(myconst.error);
+        //     const error = new Error(myconst.error);
+        //     error.statusCode = 422;
+        //     error.data = errors.array();
+        //     throw error;
+        // }
+
+        // try {
+        //     const language = req.params
+        //     const email = req.body.email;
+        //     const password = req.body.password;
+        //     const country = req.body.country;
+        //     const fullName = req.body.fullName;
+        //     const hassedPw = await bcrypt.hash(password, 12);
+        //     logger.info('going to insert user in the database');
+        //     const user1 = await user.create({
+        //         email: email,
+        //         password: hassedPw,
+        //         country: country,
+        //         fullName: fullName
+        //     })
+        //     if (user1) {
+        //         logger.info('user inserted successfully')
+        //         res.json({ message: "user added successfully" })
+        //     }
+        // }
+        // catch (error) {
+        //     if (!error.statusCode) {
+        //         error.statusCode = 422;
+        //     }
+        //     next(error);
+        // }
+    }
+    //handles login and creates token for upcoming user 
+
 }
+
 export default userController;
