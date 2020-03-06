@@ -26,3 +26,11 @@ export function response(sucess = false, message = null, status_code = null, dat
         }
     )
 }
+export function valEmail(email) {
+    let atposition = email.indexOf("@");
+    let dotposition = email.lastIndexOf(".");
+    if (atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= email.length) {
+        return true;
+    }
+    return false;
+}

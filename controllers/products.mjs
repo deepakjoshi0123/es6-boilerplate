@@ -11,7 +11,6 @@ class productController {
     static postAddProducts = async (req, res, next) => {
         logger.info('going in postaddproducts');
         showLog("hello there");
-
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -119,3 +118,4 @@ export default productController;
 //https://expressjs.com/en/guide/error-handling.html
 //https://stackify.com/node-js-error-handling/
 //https://airbrake.io/blog/nodejs-error-handling/nodejs-error-class-hierarchy
+//https://nodejs.org/api/events.html
